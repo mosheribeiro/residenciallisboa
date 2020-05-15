@@ -6,7 +6,7 @@
         <!-- tag do bootStrao vue, tem documentacao na internet -->
         <b-tabs card>
           <b-tab title="Manutenções" active>
-            <MaintananceAdmin/>
+            <MaintenanceAdmin/>
           </b-tab>
           <b-tab title="Usuários">
             <UserAdmin/>
@@ -19,12 +19,12 @@
 
 <script>
 import PageTitle from "../template/PageTitle";
-import MaintananceAdmin from "./MaintananceAdmin";
+import MaintenanceAdmin from "./MaintenanceAdmin";
 import UserAdmin from "./UserAdmin";
 
 export default {
   name: "AdminPages",
-  components: { PageTitle, MaintananceAdmin, UserAdmin }
+  components: { PageTitle, MaintenanceAdmin, UserAdmin }
 };
 </script>
 

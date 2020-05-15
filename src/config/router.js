@@ -4,6 +4,9 @@ import VueRouter from 'vue-router'
 import Home from '@/components/home/Home'
 import AdminPages from '@/components/admin/AdminPages'
 
+import Maintenance from "@/components/task/Maintenance";
+import Task from "@/components/task/Task";
+
 Vue.use(VueRouter)
 
 const routes = [{
@@ -14,6 +17,14 @@ const routes = [{
     name:'adminPages',
     path:'/admin',
     component: AdminPages
+},{
+    name:'Maintenance',
+    path:'/task/maintenance',
+    component: Maintenance
+},{
+    name:'Task',
+    path:'/task/task',
+    component: Task
 }]
 
 export default  new VueRouter({
