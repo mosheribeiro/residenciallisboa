@@ -1,6 +1,9 @@
 <template>
   <aside class="menu" v-show="isMenuVisible">
     <b-nav vertical>
+      <b-nav-item to="/">
+        <i class="fa fa-home" /> Painel de controle
+      </b-nav-item>      
       <b-nav-item to="/task/maintenance">
         <i class="fa fa-wrench" /> Manutenções
       </b-nav-item>

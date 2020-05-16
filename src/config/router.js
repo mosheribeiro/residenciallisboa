@@ -3,9 +3,9 @@ import VueRouter from 'vue-router'
 
 import Home from '@/components/home/Home'
 import AdminPages from '@/components/admin/AdminPages'
-
 import Maintenance from "@/components/task/Maintenance";
 import Task from "@/components/task/Task";
+import Auth from '@/components/auth/Auth'
 
 Vue.use(VueRouter)
 
@@ -25,6 +25,10 @@ const routes = [{
     name:'Task',
     path:'/task/task',
     component: Task
+},{
+    name: 'auth',
+    path: '/auth',
+    component: Auth
 }]
 
 export default  new VueRouter({
