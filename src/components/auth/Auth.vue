@@ -17,11 +17,12 @@
 
       <button v-if="showSignup" @click="signup">Registrar</button>
       <button v-else @click="signin">Entrar</button>
-
+<!--
       <a href @click.prevent="showSignup = !showSignup">
         <span v-if="showSignup">Já tem cadastro? Acesse o Login!</span>
         <span v-else>Não tem cadastro? Registre-se aqui!</span>
       </a>
+  -->    
     </div>
   </div>
 </template>
@@ -44,7 +45,9 @@ export default {
         .then(res => {
           this.$store.commit("setUser", res.data);
           localStorage.setItem(userKey, JSON.stringify(res.data));
-          this.$router.push({ path: "/" });
+          if(res.data.profile === 'zelador')
+            this.$router.push({ path: "/task/task" });
+          else this.$router.push({ path: "/" });
         })
         .catch(showError)
     },

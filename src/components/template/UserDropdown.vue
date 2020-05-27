@@ -1,18 +1,18 @@
 <template>
   <div class="user-dropdown">
     <div class="user-button">
-      <span class="d-none d-sm-block">{{user.name}}</span>
+      <span class="d-none d-sm-block">{{user.nameUser}}</span>
       <div class="user-dropdown-img">
         <Gravatar :email="user.email" alt="User" />
       </div>
       <i class="fa fa-angle-down"></i>
     </div>
     <div class="user-dropdown-content">
-      <router-link to="/admin">
-        <i class="fa fa-cogs"> Administração</i>
+      <router-link v-if="user.profile === 'administrador'" to="/admin">
+        <i class="fa fa-cogs">Administração</i>
       </router-link>
-      <router-link to="/" >
-        <i class="fa fa-sign-out" style="width:100%" herf @click.prevent="logout"> Sair</i>
+      <router-link to="/">
+        <i class="fa fa-sign-out" style="width:100%" herf @click.prevent="logout">Sair</i>
       </router-link>
     </div>
   </div>
@@ -21,8 +21,7 @@
 <script>
 import { mapState } from "vuex";
 import Gravatar from "vue-gravatar";
-import { userKey } from '@/global'
-
+import { userKey } from "@/global";
 
 export default {
   name: "UserDropdown",
@@ -52,16 +51,15 @@ export default {
   padding: 0px 20px;
 }
 .user-dropdown:hover {
-  background-color: rgb(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 .user-dropdown-img {
   margin: 0px 10px;
 }
 .user-dropdown-img > img {
   max-height: 37px;
-  border-radius: 25px;
+  border-radius: 5px;
 }
-
 .user-dropdown-content {
   position: absolute;
   right: 0px;
@@ -73,17 +71,14 @@ export default {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-
   visibility: hidden;
   opacity: 0;
   transition: visibility 0s, opacity 0.5s linear;
 }
-
 .user-dropdown:hover .user-dropdown-content {
   visibility: visible;
   opacity: 1;
 }
-
 .user-dropdown-content a {
   text-decoration: none;
   color: #000;

@@ -30,13 +30,25 @@
       </b-row>
       <b-row>
         <b-col md="6" sm="12">
-          <b-form-group label="Última realização:" label-for="taskModel-lastFinish">
+          <b-form-group label="Última:" label-for="taskModel-lastFinish">
             <b-form-input
               id="taskModel-lastFinish"
               type="date"
               :readonly="mode === 'remove'"
               required
               v-model="taskModel.lastFinish"
+              placeholder
+            />
+          </b-form-group>
+        </b-col>
+        <b-col md="6" sm="12">
+          <b-form-group label="Próxima:" label-for="taskModel-nextFinish">
+            <b-form-input
+              id="taskModel-nextFinish"
+              type="date"
+              :readonly="mode === 'remove'"
+              required
+              v-model="taskModel.nextFinish"
               placeholder
             />
           </b-form-group>
@@ -51,12 +63,20 @@
       </b-row>
     </b-form>
     <hr />
-    <b-table hover striped :items="tasksModels" :fields="fields">
-      <template slot="actions" slot-scope="data">
-        <b-button variant="warning" @click="loadTaskModel(data.item)" class="mr-2">
+    <b-table
+      hover
+      :tbody-tr-class="rowClass"
+      striped
+      small
+      responsive
+      :items="tasksModels"
+      :fields="fields"
+    >
+      <template v-slot:cell(actions)="row">
+        <b-button size="sm" variant="warning" @click="loadTaskModel(row.item)" class="mr-2">
           <i class="fa fa-pencil"></i>
         </b-button>
-        <b-button variant="danger" @click="loadTaskModel(data.item, 'remove')">
+        <b-button size="sm" variant="danger" @click="loadTaskModel(row.item, 'remove')">
           <i class="fa fa-trash"></i>
         </b-button>
       </template>
@@ -67,6 +87,7 @@
 <script>
 import { baseApiUrl, showError } from "@/global";
 import axios from "axios";
+import moment from "moment";
 
 export default {
   title: "taskModelAdmin",
@@ -76,11 +97,24 @@ export default {
       taskModel: {},
       tasksModels: [],
       fields: [
-        { key: "idTaskModel", label: "Código", sortable: true },
         { key: "title", label: "Título", sortable: true },
         { key: "frequency", label: "repete (dias)", sortable: true },
-        { key: "lastFinish", label: "Última realização", sortable: true },
-        { key: "nextFinish", label: "Próxima", sortable: true },
+        {
+          key: "lastFinish",
+          label: "Última realização",
+          sortable: true,
+          formatter: value => {
+            return this.formatterDate(value);
+          }
+        },
+        {
+          key: "nextFinish",
+          label: "Próxima",
+          sortable: true,
+          formatter: value => {
+            return this.formatterDate(value);
+          }
+        },
         { key: "actions", label: "Ações" }
       ]
     };
@@ -115,7 +149,7 @@ export default {
         });
     },
     remove() {
-      const id = {idTaskModel : this.taskModel.idTaskModel};
+      const id = { idTaskModel: this.taskModel.idTaskModel };
       axios
         .post(`${baseApiUrl}/removeTaskModel`, id)
         .then(() => {
@@ -123,12 +157,25 @@ export default {
           this.reset();
         })
         .catch(error => {
-          showError(error)
+          showError(error);
         });
     },
     loadTaskModel(taskModel, mode = "save") {
       this.mode = mode;
       this.taskModel = { ...taskModel };
+    },
+    formatterDate(value) {
+      if (!value) return undefined;
+      const data = moment(value);
+      return data.format("DD/MM/YYYY");
+    },
+    rowClass(item, type) {
+      if (!item || type !== "row") return;
+      if (item.nextFinish == "") return;
+      const dataAtual = new Date().toISOString().substring(0, 10);
+      if (item.nextFinish === dataAtual) return "table-warning";
+      if (item.nextFinish > dataAtual) return "table-success";
+      if (item.nextFinish < dataAtual) return "table-danger";
     }
   },
   mounted() {

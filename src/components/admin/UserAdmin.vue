@@ -70,12 +70,12 @@
       </b-row>
     </b-form>
     <hr />
-    <b-table hover striped :items="users" :fields="fields">
-      <template slot="actions" slot-scope="data">
-        <b-button variant="warning" @click="loadUser(data.item)" class="mr-2">
+    <b-table hover striped small responsive :items="users" :fields="fields">
+      <template v-slot:cell(actions)="row">
+        <b-button size="sm" variant="warning" @click="loadUser(row.item)" class="mr-2">
           <i class="fa fa-pencil"></i>
         </b-button>
-        <b-button variant="danger" @click="loadUser(data.item, 'remove')">
+        <b-button size="sm" variant="danger" @click="loadUser(row.item, 'remove')">
           <i class="fa fa-trash"></i>
         </b-button>
       </template>
@@ -98,20 +98,7 @@ export default {
         { key: "idUser", label: "Código", sortable: true },
         { key: "nameUser", label: "Nome", sortable: true },
         { key: "email", label: "Email", sortable: true },
-        {
-          key: "profile",
-          label: "Perfil",
-          sortable: true /*,
-          formatter: value =>
-            value == "admin"
-              ? "Administrador"
-              : value == "zel"
-              ? "Zelador"
-              : value == "port"
-              ? "porteiro"
-              : "Não definido"
-              */
-        },
+        { key: "profile", label: "Perfil", sortable: true},
         { key: "statusUser", label: "Situação", sortable: true },
         { key: "actions", label: "Ações" }
       ],

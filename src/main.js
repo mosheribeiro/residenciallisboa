@@ -1,9 +1,9 @@
 import 'font-awesome/css/font-awesome.css'
 import Vue from 'vue'
 import App from './App.vue'
-
 import './config/bootstrap'
 import './config/msg'
+import './config/mq'
 import store from './config/store'
 import router from './config/router'
 

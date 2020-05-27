@@ -1,9 +1,9 @@
 <template>
   <div class="tasks">
     <PageTitle icon="fa fa-tasks" main=" Tarefas" sub="Tarefas a serem realizadas" />
-    <b-table hover striped :items="tasks" :fields="fields">
-      <template slot="actions" slot-scope="data">
-        <b-button variant="primary" @click="checkTask(data.item)" class="mr-2">
+    <b-table hover striped small responsive :items="tasks" :fields="fields">
+      <template v-slot:cell(actions)="row">
+        <b-button size="sm" variant="primary" @click="checkTask(row.item)" class="mr-2">
           <i class="fa fa-check"></i>
         </b-button>        
       </template>
