@@ -20,15 +20,12 @@ export default new Vuex.Store({
         setUser(state, user) {
             state.user = user
             if (user) {
-                console.log('aqui sim')
-                axios.defaults.headers.common['Authorization'] = `bearer ${user.token}`
+                axios.defaults.headers.common['authorizationToken'] = user.token
                 state.isMenuVisible = true
                
             } else {
-                console.log('aqui não')
-                delete axios.defaults.headers.common['Authorization']
+                delete axios.defaults.headers.common['authorizationToken']
                 state.isMenuVisible = false
-             
             }
         }
     }

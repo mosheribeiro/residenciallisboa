@@ -40,30 +40,21 @@ export default {
   methods: {
     signin() {
       axios
-        .post(`${baseApiUrl}/signin`, this.user)
+        .post(`${baseApiUrl}/signinRL`, this.user)
         .then(res => {
           this.$store.commit("setUser", res.data);
           localStorage.setItem(userKey, JSON.stringify(res.data));
           this.$router.push({ path: "/" });
         })
-        .catch(() => {
-          //showError
-          const user_mock = {
-            name: 'Usuário Mock',
-            email: 'mosheribeiro01@gmail.com'
-        }
-          this.$store.commit("setUser", user_mock);
-          localStorage.setItem(userKey, JSON.stringify(user_mock));
-          this.$router.push({ path: "/" });
-        });
+        .catch(showError)
     },
     signup() {
       axios
         .post(`${baseApiUrl}/signup`, this.user)
-        .then(() => {
-          this.$toasted.global.defaultSuccess();
-          this.user = {};
-          this.showSignup = false;
+        .then(res => {
+            this.$store.commit('setUser', res.data)
+            localStorage.setItem(userKey, JSON.stringify(res.data))
+            this.$router.push({ path: '/' })
         })
         .catch(showError);
     }

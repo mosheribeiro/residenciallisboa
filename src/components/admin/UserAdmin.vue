@@ -1,7 +1,7 @@
 <template>
   <div class="user-admin">
     <b-form>
-      <input id="user-id" type="hidden" v-model="user.id" />
+      <input id="user-id" type="hidden" v-model="user.idUser" />
       <b-row>
         <b-col md="6" sm="12">
           <b-form-group label="Nome:" label-for="user-name">
@@ -9,7 +9,7 @@
               id="user-name"
               type="text"
               :readonly="mode === 'remove'"
-              v-model="user.name"
+              v-model="user.nameUser"
               required
               placeholder="Informe o Nome do Usuário..."
             />
@@ -33,8 +33,17 @@
           <b-form-group label="Perfil:" label-for="user-perfil">
             <b-form-select
               :readonly="mode === 'remove'"
-              v-model="selected"
+              v-model="user.profile"
               :options="optionsProfile"
+            ></b-form-select>
+          </b-form-group>
+        </b-col>
+        <b-col md="6" sm="12">
+          <b-form-group label="Situação:" label-for="user-status">
+            <b-form-select
+              :readonly="mode === 'remove'"
+              v-model="user.statusUser"
+              :options="optionsStatus"
             ></b-form-select>
           </b-form-group>
         </b-col>
@@ -48,17 +57,6 @@
               v-model="user.password"
               required
               placeholder="Informe a Senha do Usuário..."
-            />
-          </b-form-group>
-        </b-col>
-        <b-col md="6" sm="12">
-          <b-form-group label="Confirmação de senha:" label-for="user-confirm-password">
-            <b-form-input
-              id="user-confirm-password"
-              type="password"
-              v-model="user.confirmPassword"
-              required
-              placeholder="Confirme a Senha do Usuário..."
             />
           </b-form-group>
         </b-col>
@@ -97,13 +95,13 @@ export default {
       user: {},
       users: [],
       fields: [
-        { key: "id", label: "Código", sortable: true },
-        { key: "name", label: "Nome", sortable: true },
+        { key: "idUser", label: "Código", sortable: true },
+        { key: "nameUser", label: "Nome", sortable: true },
         { key: "email", label: "Email", sortable: true },
         {
           key: "profile",
           label: "Perfil",
-          sortable: true,
+          sortable: true /*,
           formatter: value =>
             value == "admin"
               ? "Administrador"
@@ -112,116 +110,61 @@ export default {
               : value == "port"
               ? "porteiro"
               : "Não definido"
+              */
         },
+        { key: "statusUser", label: "Situação", sortable: true },
         { key: "actions", label: "Ações" }
       ],
-      selected: null,
       optionsProfile: [
-        { value: null, text: "Selecione um perfil" },
-        { value: "admin", text: "Administrador" },
-        { value: "zel", text: "Zelador" },
-        { value: "port", text: "Porteiro" },
-        { value: "cond", text: "Condômino" }
+        { value: undefined, text: "Selecione um perfil" },
+        { value: "administrador", text: "Administrador" },
+        { value: "zelador", text: "Zelador" },
+        { value: "porteiro", text: "Porteiro" },
+        { value: "condomino", text: "Condômino" }
+      ],
+      optionsStatus: [
+        { value: undefined, text: "Selecione uma situação" },
+        { value: "ativo", text: "Ativo" },
+        { value: "inativo", text: "Inativo" }
       ]
     };
   },
   methods: {
     loadUsers() {
-      const url = `${baseApiUrl}/users`;
+      const url = `${baseApiUrl}/getUsers`;
       axios
         .get(url)
         .then(res => {
-          this.users = res.data;
+          const { Items } = res.data;
+          this.users = Items;
         })
-        .catch(() => {
-          this.users = [
-            {
-              id: 1,
-              name: "Moshe Ribeiro",
-              email: "mosheribeiro01@gmail.com",
-              profile: "admin"
-            },
-            {
-              id: 2,
-              name: "Roberto ....",
-              email: "roberto@gmail.com",
-              profile: "zel"
-            },
-            {
-              id: 3,
-              name: "Seu joão....",
-              email: "roberto@gmail.com",
-              profile: "port"
-            },
-            {
-              id: 4,
-              name: "Seu Carlos....",
-              email: "roberto@gmail.com",
-              profile: "port"
-            },
-            {
-              id: 5,
-              name: "Jacelís....",
-              email: "roberto@gmail.com",
-              profile: "admin"
-            },
-            {
-              id: 6,
-              name: "Moshe Ribeiro",
-              email: "mosheribeiro01@gmail.com",
-              profile: "admin"
-            },
-            {
-              id: 7,
-              name: "Roberto ....",
-              email: "roberto@gmail.com",
-              profile: "zelador"
-            },
-            {
-              id: 8,
-              name: "Seu joão....",
-              email: "roberto@gmail.com",
-              profile: "port"
-            },
-            {
-              id: 9,
-              name: "Seu Carlos....",
-              email: "roberto@gmail.com",
-              profile: "port"
-            },
-            {
-              id: 10,
-              name: "Jacelís....",
-              email: "roberto@gmail.com",
-              profile: "admin"
-            }
-          ];
-        });
+        .catch(showError);
     },
     reset() {
-      this.mode = "save";
-      this.user = {};
-      this.loadUsers();
+      this.mode = "save"
+      this.user = {}
+      this.loadUsers()
     },
     save() {
-      const method = this.user.id ? "put" : "post";
-      const id = this.user.id ? `/${this.user.id}` : "";
-      axios[method](`${baseApiUrl}/users${id}`, this.user)
+      axios
+        .post(`${baseApiUrl}/putUser`, this.user)
         .then(() => {
-          this.$toasted.global.defaultSuccess();
-          this.reset();
+          this.$toasted.global.defaultSuccess()
+          this.reset()
         })
         .catch(showError);
     },
     remove() {
-      const id = this.user.id;
+      const id = {idUser: this.user.idUser};
       axios
-        .delete(`${baseApiUrl}/users/${id}`)
+        .post(`${baseApiUrl}/removeUser`, id)
         .then(() => {
           this.$toasted.global.defaultSuccess();
           this.reset();
         })
-        .catch(showError);
+        .catch(error => {
+          showError(error)
+        });
     },
     loadUser(user, mode = "save") {
       this.mode = mode;

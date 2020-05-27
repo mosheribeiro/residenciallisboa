@@ -37,7 +37,7 @@
               :readonly="mode === 'remove'"
               required
               v-model="taskModel.lastFinish"
-              placeholder=""
+              placeholder
             />
           </b-form-group>
         </b-col>
@@ -76,7 +76,7 @@ export default {
       taskModel: {},
       tasksModels: [],
       fields: [
-        { key: "id", label: "Código", sortable: true },
+        { key: "idTaskModel", label: "Código", sortable: true },
         { key: "title", label: "Título", sortable: true },
         { key: "frequency", label: "repete (dias)", sortable: true },
         { key: "lastFinish", label: "Última realização", sortable: true },
@@ -87,85 +87,15 @@ export default {
   },
   methods: {
     loadTasksModels() {
-      const url = `${baseApiUrl}/tasksmodels`;
+      const url = `${baseApiUrl}/getTasksModels`;
       axios
         .get(url)
         .then(res => {
-          this.tasksModels = res.data;
+          const { Items } = res.data;
+          this.tasksModels = Items;
         })
-        .catch(() => {
-          this.tasksModels = [
-            {
-              id: 1,
-              title: "Lavar caixa d'água",
-              frequency: 90,
-              lastFinish: "2020-01-02",
-              nextFinish: "2020-01-02"
-            },
-            {
-              id: 2,
-              title: "Manutenção do portão eletrônico",
-              frequency: 90,
-              lastFinish:  '2020-01-03',
-              nextFinish: '2020-01-03'
-            },
-            {
-              id: 3,
-              title: "Limpar caixas de gordura",
-              frequency: 90,
-              lastFinish: "2020-01-04",
-              nextFinish: "2020-01-04"
-            },
-            {
-              id: 4,
-              title: "Limpar janelas",
-              frequency: 90,
-              lastFinish: "2020-01-04",
-              nextFinish: "2020-01-04"
-            },
-            {
-              id: 5,
-              title: "Limpar cobertura acrílica",
-              frequency: 90,
-              lastFinish: "2020-01-04",
-              nextFinish: "2020-01-04"
-            },
-            {
-              id: 6,
-              title: "Podar ávores e grama",
-              frequency: 90,
-              lastFinish: "2020-01-04",
-              nextFinish: "2020-01-04"
-            },
-            {
-              id: 7,
-              title: "Podar ávores e grama",
-              frequency: 90,
-              lastFinish: "2020-01-04",
-              nextFinish: "2020-01-04"
-            },
-            {
-              id: 8,
-              title: "Podar ávores e grama",
-              frequency: 90,
-              lastFinish: "2020-01-04",
-              nextFinish: "2020-01-04"
-            },
-            {
-              id: 9,
-              title: "Limpar cobertura acrílica",
-              frequency: 90,
-              lastFinish: "2020-01-04",
-              nextFinish: "2020-01-04"
-            },
-            {
-              id: 10,
-              title: "Limpar cobertura acrílica",
-              frequency: 90,
-              lastFinish: "2020-01-04",
-              nextFinish: "2020-01-04"
-            }
-          ];
+        .catch(error => {
+          showError(error);
         });
     },
     reset() {
@@ -174,24 +104,27 @@ export default {
       this.loadTasksModels();
     },
     save() {
-      const method = this.taskModel.id ? "put" : "post";
-      const id = this.taskModel.id ? `/${this.taskModel.id}` : "";
-      axios[method](`${baseApiUrl}/tasksModels${id}`, this.taskModel)
+      axios
+        .post(`${baseApiUrl}/putTaskModel`, this.taskModel)
         .then(() => {
           this.$toasted.global.defaultSuccess();
           this.reset();
         })
-        .catch(showError);
+        .catch(error => {
+          console.log(error);
+        });
     },
     remove() {
-      const id = this.taskModel.id;
+      const id = {idTaskModel : this.taskModel.idTaskModel};
       axios
-        .delete(`${baseApiUrl}/tasksModels/${id}`)
+        .post(`${baseApiUrl}/removeTaskModel`, id)
         .then(() => {
           this.$toasted.global.defaultSuccess();
           this.reset();
         })
-        .catch(showError);
+        .catch(error => {
+          showError(error)
+        });
     },
     loadTaskModel(taskModel, mode = "save") {
       this.mode = mode;

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-export const baseApiUrl = 'http://localhost:8081'
+export const baseApiUrl = 'https://bqnafxess7.execute-api.us-east-2.amazonaws.com/default'
 export const userKey = '__residencial_lisboa_user'
 
 export function showError(e) {
